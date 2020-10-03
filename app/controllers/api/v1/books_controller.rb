@@ -3,7 +3,7 @@ class Api::V1::BooksController < ApplicationController
   before_action :set_book, only: %i[update destroy show]
 
   def index
-    @pagy, @books = pagy(Book.all, items: 20)
+    @pagy, @books = pagy(Book.search(params), items: 20)
     options = {
       links: {
         first: api_v1_books_path(page: 1),
