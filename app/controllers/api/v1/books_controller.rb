@@ -1,6 +1,15 @@
 class Api::V1::BooksController < ApplicationController
   before_action :check_admin, only: %i[create update destroy]
-  before_action :set_book, only: %i[update destroy]
+  before_action :set_book, only: %i[update destroy show]
+
+  def index
+    @books = Book.all
+    render json: BookSerializer.new(@books).serializable_hash
+  end
+
+  def show
+    render json: BookSerializer.new(@book).serializable_hash
+  end
 
   def create
     @book = Book.new(book_params)

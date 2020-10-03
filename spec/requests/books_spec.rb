@@ -142,3 +142,13 @@ RSpec.describe "DELETE api/v1/book/:id", type: :request do
     end
   end
 end
+
+RSpec.describe "SHOW api/v1/book/:id", type: :request do
+  let!(:book) { FactoryBot.create(:book) }
+  it 'shows a product' do
+    get api_v1_book_url(book), as: :json
+    expect(response).to have_http_status(:success)
+    json_response = JSON.parse(response.body, symbolize_names: true)
+    expect(json_response.dig(:data, :attributes, :title)).to eq book.title
+  end
+end
