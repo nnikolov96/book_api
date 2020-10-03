@@ -106,3 +106,39 @@ RSpec.describe "PATCH api/v1/book/:id", type: :request do
     end
   end
 end
+
+
+RSpec.describe "DELETE api/v1/book/:id", type: :request do
+  let!(:book) { FactoryBot.create(:book) }
+  let(:admin_user) { FactoryBot.create(:user, :admin) }
+  let(:user) { FactoryBot.create(:user) }
+
+  context 'when admin' do
+    it 'deletes book when admin' do
+      expect do
+        delete api_v1_book_url(book),
+        headers: { Authorization: JsonWebToken.encode(user_id: admin_user.id) }, as: :json 
+      end.to change { Book.count }.by(-1)
+      expect(response).to have_http_status :no_content
+    end
+  end
+
+  context 'normal user' do
+    it 'does not delete book when normal user' do
+      expect do
+        delete api_v1_book_url(book),
+        headers: { Authorization: JsonWebToken.encode(user_id: user.id) }, as: :json 
+      end.to_not(change { Book.count })
+      expect(response).to have_http_status :forbidden
+    end
+  end
+
+  context 'not logged in' do
+    it 'does not delete book when not logged in' do
+      expect do
+        delete api_v1_book_url(book), as: :json
+      end.to_not(change { Book.count })
+      expect(response).to have_http_status :forbidden
+    end
+  end
+end

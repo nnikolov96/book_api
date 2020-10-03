@@ -1,6 +1,6 @@
 class Api::V1::BooksController < ApplicationController
-  before_action :check_admin, only: %i[create update]
-  before_action :set_book, only: %i[update]
+  before_action :check_admin, only: %i[create update destroy]
+  before_action :set_book, only: %i[update destroy]
 
   def create
     @book = Book.new(book_params)
@@ -17,6 +17,11 @@ class Api::V1::BooksController < ApplicationController
     else
       render json: @book.errors, status: :unprocessable_entity
     end
+  end
+
+  def destroy
+    @book.destroy
+    head 204
   end
 
   private
