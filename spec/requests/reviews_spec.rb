@@ -184,6 +184,10 @@ RSpec.describe "GET api/v1/books/:id/reviews", type: :request do
 
   it 'lists all reviews for book' do
     get api_v1_book_reviews_url(book), as: :json
-    expect(response).to have_http_status(:success)
+    expect(response).to have_http_status :success
+    json_response = JSON.parse(response.body, symbolize_names: true)
+    expect(json_response.dig(:links, :last)).to eq "/api/v1/books/#{book.id}/reviews?page=2"
+    expect(json_response.dig(:links, :next)).to eq "/api/v1/books/#{book.id}/reviews?page=2"
+    expect(json_response.dig(:links, :prev)).to eq "/api/v1/books/#{book.id}/reviews"
   end
 end

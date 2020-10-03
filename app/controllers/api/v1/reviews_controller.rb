@@ -5,8 +5,16 @@ class Api::V1::ReviewsController < ApplicationController
   before_action :check_owner!, only: %i[update destroy]
 
   def index
-    options = { include: [:book] }
-    @reviews = @book.reviews.all
+    @pagy, @reviews = pagy(@book.reviews.all, items: 20)
+    options = {
+      include: [:book],
+      links: {
+        first: api_v1_book_reviews_path(page: 1),
+        last: api_v1_book_reviews_path(page: @pagy.last),
+        prev: api_v1_book_reviews_path(page: @pagy.prev),
+        next: api_v1_book_reviews_path(page: @pagy.next)
+      }
+    }
     render json: ReviewSerializer.new(@reviews, options).serializable_hash
   end
 
