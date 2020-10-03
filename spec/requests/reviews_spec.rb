@@ -172,3 +172,19 @@ RSpec.describe "DELETE api/v1/books/:id/review/:id", type: :request do
     end
   end
 end
+
+RSpec.describe "GET api/v1/books/:id/reviews", type: :request do
+  let(:book) { FactoryBot.create(:book) }
+  let(:user) { FactoryBot.create(:user) }
+  before do
+    25.times do
+      FactoryBot.create(:review, book: book, user: user)
+    end
+  end
+
+  it 'lists all reviews for book' do
+    byebug
+    get api_v1_book_reviews_url(book), as: :json
+    expect(response).to have_http_status(:success)
+  end
+end
