@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Book, type: :model do
   let(:book) { FactoryBot.create(:book) }
+
   context 'validations' do
     it 'has a valid factory' do
       expect(book).to be_valid
@@ -44,6 +45,18 @@ RSpec.describe Book, type: :model do
       book.description = 't' * 1001
       expect(book).to_not be_valid
       expect(book.errors[:description]).to include 'is too long (maximum is 1000 characters)'
+    end
+  end
+
+  context 'rating' do
+    it 'has 0.0 rating when no reviews' do
+      expect(book.rating).to eq 0.0
+    end
+
+    it 'calculates its average score when reviews present' do
+      FactoryBot.create(:review, rating: 5, book: book)
+      FactoryBot.create(:review, rating: 3, book: book)
+      expect(book.rating).to eq(4)
     end
   end
 end
