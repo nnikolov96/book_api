@@ -1,8 +1,8 @@
 class Api::V1::ReviewsController < ApplicationController
   before_action :set_book
+  before_action :set_review, only: %i[update destroy]
   before_action :check_login, only: %i[create update destroy]
   before_action :check_owner!, only: %i[update destroy]
-  before_action :set_review, only: %i[update destroy]
 
   def create
     @review = @book.reviews.new(review_params)
@@ -36,6 +36,6 @@ class Api::V1::ReviewsController < ApplicationController
   end
 
   def check_owner!
-    return :forbidden unless @current_user.admin? || review.user == @current_user
+    head :forbidden unless @current_user.admin? || @review.user == @current_user
   end
 end
