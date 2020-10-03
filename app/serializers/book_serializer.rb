@@ -1,4 +1,4 @@
 class BookSerializer
   include FastJsonapi::ObjectSerializer
-  attributes :title, :isbn, :description
+  attributes :title, :isbn, :description, :rating
 end
