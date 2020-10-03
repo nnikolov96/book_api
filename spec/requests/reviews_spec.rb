@@ -103,6 +103,7 @@ RSpec.describe "PATCH api/v1/books/:id/review/:id", type: :request do
       expect(response).to have_http_status :unprocessable_entity
     end
   end
+
   context 'when logged in but not owners review' do
     it 'does not update review it doesnt own' do
       patch api_v1_book_review_url(book, review), params: {
@@ -117,7 +118,10 @@ RSpec.describe "PATCH api/v1/books/:id/review/:id", type: :request do
 
   context 'when not logged in' do
     it 'does not update reviews when not logged in' do
-      
+      patch api_v1_book_review_url(book, review), params: {
+        review: { text: 'Review for anonnymous user, shouldnt work', rating: '2' }
+      }, as: :json
+      expect(response).to have_http_status :forbidden
     end
   end
 end
