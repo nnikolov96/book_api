@@ -152,3 +152,19 @@ RSpec.describe "SHOW api/v1/book/:id", type: :request do
     expect(json_response.dig(:data, :attributes, :title)).to eq book.title
   end
 end
+
+RSpec.describe "INDEX api/v1/books", type: :request do
+  before do
+    21.times do
+      FactoryBot.create(:book)
+    end
+  end
+  it 'paginates results' do
+    get api_v1_books_url, as: :json
+    expect(response).to have_http_status :success
+    json_response = JSON.parse(response.body, symbolize_names: true)
+    expect(json_response.dig(:links, :last)).to eq '/api/v1/books?page=2'
+    expect(json_response.dig(:links, :next)).to eq '/api/v1/books?page=2'
+    expect(json_response.dig(:links, :prev)).to eq '/api/v1/books'
+  end
+end

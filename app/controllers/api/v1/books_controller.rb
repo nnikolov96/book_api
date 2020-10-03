@@ -3,8 +3,16 @@ class Api::V1::BooksController < ApplicationController
   before_action :set_book, only: %i[update destroy show]
 
   def index
-    @books = Book.all
-    render json: BookSerializer.new(@books).serializable_hash
+    @pagy, @books = pagy(Book.all, items: 20)
+    options = {
+      links: {
+        first: api_v1_books_path(page: 1),
+        last: api_v1_books_path(page: @pagy.last),
+        prev: api_v1_books_path(page: @pagy.prev),
+        next: api_v1_books_path(page: @pagy.next)
+      }
+    }
+    render json: BookSerializer.new(@books, options).serializable_hash
   end
 
   def show
