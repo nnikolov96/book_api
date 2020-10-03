@@ -4,6 +4,12 @@ class Api::V1::ReviewsController < ApplicationController
   before_action :check_login, only: %i[create update destroy]
   before_action :check_owner!, only: %i[update destroy]
 
+  def index
+    options = { include: [:book] }
+    @reviews = @book.reviews.all
+    render json: ReviewSerializer.new(@reviews, options).serializable_hash
+  end
+
   def create
     @review = @book.reviews.new(review_params)
     if @review.save
