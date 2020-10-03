@@ -1,0 +1,49 @@
+require 'rails_helper'
+
+RSpec.describe Book, type: :model do
+  let(:book) { FactoryBot.create(:book) }
+  context 'validations' do
+    it 'has a valid factory' do
+      expect(book).to be_valid
+    end
+
+    context 'title' do
+      it 'is not valid without title' do
+        book.title = nil
+        expect(book).to_not be_valid
+        expect(book.errors[:title]).to include "can't be blank"
+      end
+
+      it 'is not valid with title shorter than 2 characters' do
+        book.title = 't'
+        expect(book).to_not be_valid
+        expect(book.errors[:title]).to include 'is too short (minimum is 2 characters)'
+      end
+
+      it 'is not valid with title longer than 100 characters' do
+        book.title = 't' * 101
+        expect(book).to_not be_valid
+        expect(book.errors[:title]).to include 'is too long (maximum is 100 characters)'
+      end
+    end
+
+    context 'isbn' do
+      it 'is not valid without isbn' do
+        book.isbn = nil
+        expect(book).to_not be_valid
+        expect(book.errors[:isbn]).to include "can't be blank"
+      end
+      it 'has unique isbn' do
+        book_dup = book.dup
+        expect(book_dup).to_not be_valid
+        expect(book_dup.errors[:isbn]).to include 'has already been taken'
+      end
+    end
+
+    it 'is not valid with description longer than 1000 characters' do
+      book.description = 't' * 1001
+      expect(book).to_not be_valid
+      expect(book.errors[:description]).to include 'is too long (maximum is 1000 characters)'
+    end
+  end
+end
