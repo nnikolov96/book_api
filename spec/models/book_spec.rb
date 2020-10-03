@@ -59,4 +59,16 @@ RSpec.describe Book, type: :model do
       expect(book.rating).to eq(4)
     end
   end
+
+  context 'search' do
+    let!(:book_one) { FactoryBot.create(:book, title: 'First Book') }
+    let!(:book_two) { FactoryBot.create(:book, title: 'Second Book') }
+    let!(:book_three) { FactoryBot.create(:book, title: 'First but different') }
+    it 'filters book by provided search term' do
+      books = Book.filter_by_title('first')
+      expect(books).to include book_one
+      expect(books).to include book_three
+      expect(books).to_not include book_two
+    end
+  end
 end
