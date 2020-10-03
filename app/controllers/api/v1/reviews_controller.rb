@@ -21,6 +21,11 @@ class Api::V1::ReviewsController < ApplicationController
     end
   end
 
+  def destroy
+    @review.destroy
+    head 204
+  end
+
   private
 
   def set_book

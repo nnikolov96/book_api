@@ -125,3 +125,50 @@ RSpec.describe "PATCH api/v1/books/:id/review/:id", type: :request do
     end
   end
 end
+
+RSpec.describe "DELETE api/v1/books/:id/review/:id", type: :request do
+  let(:admin) { FactoryBot.create(:user, :admin) }
+  let(:user) { FactoryBot.create(:user) }
+  let(:another_user) { FactoryBot.create(:user) }
+  let(:book) { FactoryBot.create(:book) }
+  let!(:review) { FactoryBot.create(:review, user: user, book: book) }
+
+  context 'when admin' do
+    it 'deletes review when admin' do
+      expect do
+        delete api_v1_book_review_url(book, review),
+        headers: { Authorization: JsonWebToken.encode(user_id: admin.id)}, as: :json
+      end.to change { book.reviews.count }.by(-1)
+      expect(response).to have_http_status :no_content
+    end
+  end
+
+  context 'when logged in and owners review' do
+    it 'deletes review when reviews owner' do
+      expect do
+        delete api_v1_book_review_url(book, review),
+        headers: { Authorization: JsonWebToken.encode(user_id: user.id)}, as: :json
+      end.to change { book.reviews.count }.by(-1)
+      expect(response).to have_http_status :no_content
+    end
+  end
+
+  context 'when logged in but does not own review' do
+    it 'does not delete review when not owner' do
+      expect do
+        delete api_v1_book_review_url(book, review),
+        headers: { Authorization: JsonWebToken.encode(user_id: another_user.id)}, as: :json
+      end.to_not(change { book.reviews.count })
+      expect(response).to have_http_status :forbidden
+    end
+  end
+
+  context 'when not logged' do
+    it 'does not delete review when not logged in' do
+      expect do
+        delete api_v1_book_review_url(book, review), as: :json
+      end.to_not(change { book.reviews.count })
+      expect(response).to have_http_status :forbidden
+    end
+  end
+end
