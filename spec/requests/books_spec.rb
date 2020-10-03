@@ -70,8 +70,8 @@ RSpec.describe "PATCH api/v1/book/:id", type: :request do
       headers: {
         Authorization: JsonWebToken.encode(user_id: admin_user.id)
       }, as: :json
-      json_response = JSON.parse(response.body)
-      expect(json_response['title']).to eq 'Updated Title'
+      json_response = JSON.parse(response.body, symbolize_names: true)
+      expect(json_response.dig(:data, :attributes, :title)).to eq 'Updated Title'
       expect(response).to have_http_status :success
     end
     it 'does not update book with invalid attributes' do

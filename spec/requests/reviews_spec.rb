@@ -183,7 +183,6 @@ RSpec.describe "GET api/v1/books/:id/reviews", type: :request do
   end
 
   it 'lists all reviews for book' do
-    byebug
     get api_v1_book_reviews_url(book), as: :json
     expect(response).to have_http_status(:success)
   end
