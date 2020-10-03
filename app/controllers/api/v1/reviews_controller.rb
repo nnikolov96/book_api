@@ -1,10 +1,20 @@
 class Api::V1::ReviewsController < ApplicationController
   before_action :set_book
-  before_action :check_login, only: %i[create]
+  before_action :check_login, only: %i[create update destroy]
+  before_action :check_owner!, only: %i[update destroy]
+  before_action :set_review, only: %i[update destroy]
 
   def create
     @review = @book.reviews.new(review_params)
     if @review.save
+      render json: @review, status: :created
+    else
+      render json: { errors: @review.errors }, status: :unprocessable_entity
+    end
+  end
+
+  def update
+    if @review.update(review_params)
       render json: @review, status: :created
     else
       render json: { errors: @review.errors }, status: :unprocessable_entity
@@ -17,7 +27,15 @@ class Api::V1::ReviewsController < ApplicationController
     @book = Book.find(params[:book_id])
   end
 
+  def set_review
+    @review = @book.reviews.find(params[:id])
+  end
+
   def review_params
     params.require(:review).permit(:text, :rating).merge(user: current_user)
+  end
+
+  def check_owner!
+    return :forbidden unless @current_user.admin? || review.user == @current_user
   end
 end

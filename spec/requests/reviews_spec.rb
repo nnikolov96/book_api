@@ -44,3 +44,58 @@ RSpec.describe "POST api/v1/books/:id/reviews", type: :request do
     end
   end
 end
+
+
+RSpec.describe "PATCH api/v1/books/:id/review/:id", type: :request do
+  let(:admin) { FactoryBot.create(:user, :admin) }
+  let(:user) { FactoryBot.create(:user) }
+  let(:book) { FactoryBot.create(:book) }
+  let!(:review) { FactoryBot.create(:review, user: user, book: book) }
+
+  context 'when admin' do
+    it 'updates review with valid attributes' do
+      patch api_v1_book_review_url(book, review), params: {
+        review: { text: 'I changed my mind about this specific book', rating: '2.3' }
+      },
+      headers: {
+        Authorization: JsonWebToken.encode(user_id: admin.id)
+      }, as: :json
+      json_response = JSON.parse(response.body)
+      expect(json_response['text']).to eq 'I changed my mind about this specific book'
+      expect(json_response['rating']).to eq '2.3'
+      expect(response).to have_http_status :created
+    end
+
+    it 'does not update review with invalid attributes' do
+      patch api_v1_book_review_url(book, review), params: {
+        review: { text: '' }
+      },
+      headers: {
+        Authorization: JsonWebToken.encode(user_id: admin.id)
+      }, as: :json
+
+      expect(response).to have_http_status :unprocessable_entity
+    end
+  end
+
+  context 'when logged in and owners review' do
+    it 'updates review with valid attributes' do
+      
+    end
+
+    it 'does not update review with invalid attributes' do
+      
+    end
+  end
+  context 'when logged in but not owners review' do
+    it 'does not update review it doesnt own' do
+      
+    end
+  end
+
+  context 'when not logged in' do
+    it 'does not update reviews when not logged in' do
+      
+    end
+  end
+end
