@@ -17,7 +17,12 @@ class Api::V1::BooksController < ApplicationController
   end
 
   def show
-    render json: BookSerializer.new(@book).serializable_hash
+    options = {
+      links: {
+        books: api_v1_books_path
+      }
+    }
+    render json: BookSerializer.new(@book, options).serializable_hash
   end
 
   def create
