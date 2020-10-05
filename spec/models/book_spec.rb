@@ -56,7 +56,7 @@ RSpec.describe Book, type: :model do
     it 'calculates its average score when reviews present' do
       FactoryBot.create(:review, rating: 5, book: book)
       FactoryBot.create(:review, rating: 3, book: book)
-      expect(book.rating).to eq(4)
+      expect(book.average_rating).to eq(4)
     end
   end
 
