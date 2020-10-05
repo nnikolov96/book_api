@@ -7,8 +7,8 @@ class Api::V1::ReviewsController < ApplicationController
   def index
     @pagy, @reviews = pagy(@book.reviews.all, items: 20)
     options = {
-      include: [:book],
       links: {
+        book: api_v1_book_path(@book),
         first: api_v1_book_reviews_path(page: 1),
         last: api_v1_book_reviews_path(page: @pagy.last),
         prev: api_v1_book_reviews_path(page: @pagy.prev),
