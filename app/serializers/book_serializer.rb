@@ -2,7 +2,8 @@ class BookSerializer
   include FastJsonapi::ObjectSerializer
   include Rails.application.routes.url_helpers
 
-  attributes :title, :isbn, :description, :rating
+  attributes :title, :isbn, :description, :average_rating
+  
   attribute :image do |object|
     Rails.application.routes.url_helpers.rails_blob_path(object.image, only_path: true) if object.image.attached?
   end

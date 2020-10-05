@@ -20,4 +20,11 @@ class Book < ApplicationRecord
       0.0
     end
   end
+
+  def update_average_rating
+    return 0.0 unless reviews.present?
+
+    avg = reviews.average(:rating).round(1)
+    update_column(:average_rating, avg)
+  end
 end
