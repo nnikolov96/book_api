@@ -2,7 +2,6 @@ FactoryBot.define do
   factory :book do
     title { 'The Fountainhead' }
     description { 'Some Random Description' }
-    average_rating { '4.4' }
     sequence(:isbn) { |n| "unique_isbn_#{n}" }
 
     trait :with_image do

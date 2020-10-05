@@ -13,18 +13,14 @@ class Book < ApplicationRecord
     books
   end
 
-  def rating
-    if reviews.present?
-      reviews.average(:rating).round(1)
-    else
-      0.0
-    end
-  end
-
   def update_average_rating
     return 0.0 unless reviews.present?
 
     avg = reviews.average(:rating).round(1)
     update_column(:average_rating, avg)
+  end
+
+  def url
+    Rails.application.routes.url_helpers.api_v1_book_path(self)
   end
 end

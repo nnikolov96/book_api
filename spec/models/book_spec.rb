@@ -49,8 +49,9 @@ RSpec.describe Book, type: :model do
   end
 
   context 'rating' do
+    let(:book) { FactoryBot.create(:book) }
     it 'has 0.0 rating when no reviews' do
-      expect(book.rating).to eq 0.0
+      expect(book.average_rating).to eq 0.0
     end
 
     it 'calculates its average score when reviews present' do
