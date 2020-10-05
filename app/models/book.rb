@@ -1,5 +1,6 @@
 class Book < ApplicationRecord
   has_many :reviews, dependent: :destroy
+  has_one_attached :image
   validates :title, presence: true, length: { minimum: 2, maximum: 100 }
   validates :description, length: { maximum: 1000 }
   validates :isbn, presence: true, uniqueness: true

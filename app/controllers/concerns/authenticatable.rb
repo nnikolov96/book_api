@@ -1,7 +1,6 @@
 module Authenticatable
   def current_user
     return @current_user if @current_user
-
     header = request.headers['Authorization']
     return nil if header.nil?
 

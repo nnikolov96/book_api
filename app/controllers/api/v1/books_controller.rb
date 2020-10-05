@@ -4,6 +4,7 @@ class Api::V1::BooksController < ApplicationController
 
   def index
     @pagy, @books = pagy(Book.search(params), items: 20)
+
     options = {
       links: {
         first: api_v1_books_path(page: 1),
@@ -44,7 +45,7 @@ class Api::V1::BooksController < ApplicationController
   private
 
   def book_params
-    params.require(:book).permit(:isbn, :title, :description)
+    params.require(:book).permit(:isbn, :title, :description, :image)
   end
 
   def set_book
