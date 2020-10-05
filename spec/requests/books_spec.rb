@@ -5,7 +5,7 @@ RSpec.describe "POST api/v1/books", type: :request do
   let(:user) { FactoryBot.create(:user) }
 
   before do
-    @book_attributes = FactoryBot.attributes_for(:book)
+    @book_attributes = FactoryBot.attributes_for(:book, :with_image)
   end
   context 'when admin' do
     it 'creates book with valid attributes' do
